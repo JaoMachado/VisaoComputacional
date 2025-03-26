@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import cv2
 import random
+import matplotlib.pyplot as plt
 
 imageOriginal = cv2.imread("data/macau-parrot.jpg")
 image = cv2.imread("data/macau-parrot.jpg")
@@ -33,7 +34,7 @@ for a in range(1000000):
 for linha, coluna in lista:
     image[linha][coluna] = criarRgb()
 
-cv2.imshow("Imagem", imageOriginal)
+cv2.imshow("Imagem Original", imageOriginal)
 cv2.waitKey(0) 
-cv2.imshow("Imagem", image)
+cv2.imshow("Imagem com Ruido", image)
 cv2.waitKey(0) 
