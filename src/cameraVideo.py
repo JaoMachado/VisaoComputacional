@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-'''
+
 # Inicializa a captura de vídeo (0 para webcam padrão)
 cap = cv2.VideoCapture(0)
 
@@ -40,7 +40,7 @@ while video.isOpened():
 
 video.release()  # Libera o vídeo
 cv2.destroyAllWindows()
-'''
+
 image = cv2.imread("data/macau-parrot.jpg")
 
 # Desenhar um retângulo (imagem, ponto inicial, ponto final, cor, espessura)
