@@ -1,45 +1,56 @@
-import pandas as pd
-import numpy as np
 import cv2
+import numpy as np
 import matplotlib.pyplot as plt
 
-# Função para calcular e exibir histograma
-def plot_histogram(image, title, subplot):
-    hist = cv2.calcHist([image], [0], None, [256], [0, 256])
-    plt.subplot(2, 2, subplot)
-    plt.plot(hist, color='black')
-    plt.xlim([0, 256])
-    plt.title(title)
-
+# Carregando as imagens em tons de cinza
 imageUniforme = cv2.imread("data/deckPB.jpg", cv2.IMREAD_GRAYSCALE)
+imageBaixoContraste = cv2.imread("data/paisagemPinguins.jpg", cv2.IMREAD_GRAYSCALE)
 
-imageBaixoContraste = cv2.imread("data/paisagemPinguins.jpg")
+# Equalização do histograma
+eqImageUniforme = cv2.equalizeHist(imageUniforme)
+eqImageBaixoContraste = cv2.equalizeHist(imageBaixoContraste)
 
-# Equalizar histograma das imagens
-imageUniformeEq = cv2.equalizeHist(imageUniforme)
-imageBaixoContrasteEq = cv2.equalizeHist(imageBaixoContraste)
+# Cálculo dos histogramas
+histUniforme = cv2.calcHist([imageUniforme], [0], None, [256], [0, 256])
+histBaixoContraste = cv2.calcHist([imageBaixoContraste], [0], None, [256], [0, 256])
+histUniformeEq = cv2.calcHist([eqImageUniforme], [0], None, [256], [0, 256])
+histBaixoContrasteEq = cv2.calcHist([eqImageBaixoContraste], [0], None, [256], [0, 256])
 
-cv2.imshow("Original - Baixo Contraste", imageBaixoContraste)
-cv2.imshow("Equalizado - Baixo Contraste", imageBaixoContrasteEq)
-cv2.imshow("Original - Iluminação Não Uniforme", imageUniforme)
-cv2.imshow("Equalizado - Iluminação Não Uniforme", imageUniformeEq)
+# Função para mostrar imagens lado a lado
+def mostrar_imagens(titulo, original, equalizada):
+    plt.figure(figsize=(10, 4))
+    plt.subplot(1, 2, 1)
+    plt.title(f'{titulo} - Original')
+    plt.imshow(original, cmap='gray')
+    plt.axis('off')
+    
+    plt.subplot(1, 2, 2)
+    plt.title(f'{titulo} - Equalizada')
+    plt.imshow(equalizada, cmap='gray')
+    plt.axis('off')
+    
+    plt.tight_layout()
+    plt.show()
 
-# Plotar histogramas
-plt.figure(figsize=(12, 6))
+# Função para mostrar histograma
+def mostrar_histograma(titulo, hist_original, hist_eq):
+    plt.figure(figsize=(12, 4))
+    plt.subplot(1, 2, 1)
+    plt.title(f'{titulo} - Histograma Original')
+    plt.plot(hist_original, color='black')
+    plt.xlim([0, 256])
+    
+    plt.subplot(1, 2, 2)
+    plt.title(f'{titulo} - Histograma Equalizado')
+    plt.plot(hist_eq, color='black')
+    plt.xlim([0, 256])
+    
+    plt.tight_layout()
+    plt.show()
 
-# Histograma original - Baixo Contraste
-plot_histogram(imageBaixoContraste, "Histograma Original - Baixo Contraste", 1)
-# Histograma equalizado - Baixo Contraste
-plot_histogram(imageBaixoContrasteEq, "Histograma Equalizado - Baixo Contraste", 2)
-# Histograma original - Iluminação Não Uniforme
-plot_histogram(imageUniforme, "Histograma Original - Iluminação Não Uniforme", 3)
-# Histograma equalizado - Iluminação Não Uniforme
-plot_histogram(imageUniformeEq, "Histograma Equalizado - Iluminação Não Uniforme", 4)
+# Mostrar resultados
+mostrar_imagens("Imagem de Baixo Contraste", imageBaixoContraste, eqImageBaixoContraste)
+mostrar_histograma("Imagem de Baixo Contraste", histBaixoContraste, histBaixoContrasteEq)
 
-# Mostrar gráficos
-plt.tight_layout()
-plt.show()
-
-# Aguardar tecla para fechar janelas
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+mostrar_imagens("Imagem com Iluminação Não Uniforme", imageUniforme, eqImageUniforme)
+mostrar_histograma("Imagem com Iluminação Não Uniforme", histUniforme, histUniformeEq)
