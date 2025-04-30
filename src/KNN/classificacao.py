@@ -52,6 +52,20 @@ knn.train(dados_treino, cv2.ml.ROW_SAMPLE, rotulos_treino)
 k = 3
 
 # Encontrar os vizinhos mais proximos
-ret, rotulos_classificados, vizinhos, distancias = knn.findNearest(dados_teste, k)
+ret, resultados, vizinhos, distancias = knn.findNearest(dados_teste, k)
 
-print(rotulos_classificados)
+# Avaliar o modelo
+rotulos_previstos = resultados.flatten().astype(np.int32)
+
+calculo = rotulos_previstos == rotulos_teste
+acuracia = np.mean(calculo)
+print("Acuracia: ", acuracia)
+
+
+# Observar a matriz de confusão
+confusao = np.zeros((2, 2), dtype=np.int32)
+for i in range(len(rotulos_teste)):
+    confusao[rotulos_teste[i], rotulos_previstos[i]] += 1
+
+print("Matriz de Confusão: ")
+print(confusao)
